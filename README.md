@@ -1,5 +1,52 @@
 # Subject-choice-IA
 Automatic Crack Detection on Aircraft Wings
+Project Overview
+
+This project develops and compares two Artificial Intelligence models for detecting cracks on aircraft wing surfaces using computer vision techniques. Crack detection is essential in aviation maintenance to ensure structural integrity and flight safety.
+The two models evaluated are:
+
+YOLOv8 (object detection)
+U-Net (semantic segmentation)
+Both models are trained on a dataset of aircraft wing images and assessed using standard metrics.
+
+Objectives
+Build an automated crack detection system.
+Compare two AI models and determine which performs best.
+Provide a complete workflow: preprocessing, training, evaluation.
+Improve aviation safety through faster and more reliable inspection.
+
+crack_detection/
+│
+├── data/
+│   ├── images/
+│   └── masks/
+│
+├── yolov8/
+│   ├── dataset.yaml
+│   ├── labels/
+│   └── infer_yolo.py
+│
+├── unet/
+│   ├── model.py
+│   ├── datasets.py
+│   ├── train_unet.py
+│   ├── eval_unet.py
+│   └── infer_unet.py
+│
+├── utils/
+│   └── convert_mask_to_bbox.py
+│
+├── compare_models.py
+└── README.md
+
+Technologies Used:
+
+Python
+PyTorch
+Ultralytics YOLOv8
+Albumentations
+OpenCV
+NumPy
 
 import os
 import cv2
@@ -283,4 +330,32 @@ print("YOLOv8 time:", (time.time() - t0)*1000, "ms")
 t0 = time.time()
 infer_unet(img)
 print("U-Net time:", (time.time() - t0)*1000, "ms")
+
+
+How to Run
+1. Install dependencies
+pip install -r requirements.txt
+
+2. Train YOLOv8
+yolo detect train model=yolov8n.pt data=yolov8/dataset.yaml epochs=50 imgsz=640
+
+3. Train U-Net
+python unet/train_unet.py
+
+4. Evaluate
+
+YOLOv8:
+yolo detect val model=best.pt data=yolov8/dataset.yaml
+
+
+U-Net:
+python unet/eval_unet.py
+
+Results (summary)
+Model	Precision	Recall	F1-score  mAP@0.5 / IoU
+YOLOv8	0.92	    0.88	    0.90	  mAP: 0.89
+U-Net	0.89	    0.93	    0.91	  IoU: 0.74
+
+YOLOv8 = best for real-time detection
+U-Net = best for detailed crack shape
 
